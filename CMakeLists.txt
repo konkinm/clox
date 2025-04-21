@@ -7,10 +7,11 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Добавляем исполняемый файл `clox.exe` из исходников
 add_executable(clox 
-    main.c
-    chunk.c
-    memory.c
-	debug.c
+  main.c
+  chunk.c
+  memory.c
+  value.c
+  debug.c
 )
 
 # Если заголовочные файлы (.h) лежат в текущей папке, добавляем её в include-пути
@@ -20,6 +21,6 @@ target_include_directories(clox PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Сборка + запуск
 add_custom_target(run 
-    COMMAND clox
-    DEPENDS clox
+  COMMAND clox
+  DEPENDS clox
 )
