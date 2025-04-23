@@ -7,11 +7,14 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Добавляем исполняемый файл `clox.exe` из исходников
 add_executable(clox 
-  main.c
+  compiler.c
   chunk.c
-  memory.c
-  value.c
   debug.c
+  main.c
+  memory.c
+  scanner.c
+  value.c
+  vm.c
 )
 
 # Если заголовочные файлы (.h) лежат в текущей папке, добавляем её в include-пути
