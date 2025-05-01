@@ -52,21 +52,21 @@ static bool isFalsey(Value value) {
 }
  
 static InterpretResult run() {
-  #define READ_BYTE() (*vm.ip++)
-  #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
-  #define BINARY_OP(valueType, op) \
-    do { \
-      if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
-        runtimeError("Operands must be numbers."); \
-        return INTERPRET_RUNTIME_ERROR; \
-      } \
-      double b = AS_NUMBER(pop()); \
-      double a = AS_NUMBER(pop()); \
-      push(valueType(a op b)); \
-    } while (false)
+#define READ_BYTE() (*vm.ip++)
+#define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
+#define BINARY_OP(valueType, op) \
+  do { \
+    if (!IS_NUMBER(peek(0)) || !IS_NUMBER(peek(1))) { \
+      runtimeError("Operands must be numbers."); \
+      return INTERPRET_RUNTIME_ERROR; \
+    } \
+    double b = AS_NUMBER(pop()); \
+    double a = AS_NUMBER(pop()); \
+    push(valueType(a op b)); \
+  } while (false)
    
   for (;;) {
-    #ifdef DEBUG_TRACE_EXECUTION
+#ifdef DEBUG_TRACE_EXECUTION
       printf("          ");
       for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
         printf("[ ");
@@ -75,7 +75,7 @@ static InterpretResult run() {
       }
       printf("\n");
       disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
-    #endif DEBUG_TRACE_EXECUTION
+#endif
     
     uint8_t instruction;
     switch (instruction = READ_BYTE()) {
@@ -87,6 +87,14 @@ static InterpretResult run() {
       case OP_NIL:      push(NIL_VAL);            break;
       case OP_TRUE:     push(BOOL_VAL(true));     break;
       case OP_FALSE:    push(BOOL_VAL(false));    break;
+      case OP_EQUAL: {
+        Value b = pop();
+        Value a = pop();
+        push(BOOL_VAL(valuesEqual(a, b)));
+        break;
+      }
+      case OP_GREATER:  BINARY_OP(BOOL_VAL, >); break;
+      case OP_LESS:     BINARY_OP(BOOL_VAL, <); break;
       case OP_ADD:      BINARY_OP(NUMBER_VAL, +); break;
       case OP_SUBTRACT: BINARY_OP(NUMBER_VAL, -); break;
       case OP_MULTIPLY: BINARY_OP(NUMBER_VAL, *); break;
@@ -109,9 +117,9 @@ static InterpretResult run() {
     }
   }
   
-  #undef READ_BYTE
-  #undef READ_CONSTANT
-  #undef BINARY_OP
+#undef READ_BYTE
+#undef READ_CONSTANT
+#undef BINARY_OP
 }
  
 InterpretResult interpret(const char* source) {

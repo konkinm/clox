@@ -26,7 +26,7 @@ typedef struct {
 
 #define BOOL_VAL(value) ((Value){VAL_BOOL, {.boolean = value}})
 #define NIL_VAL         ((Value){VAL_NIL, {.number = 0}})
-#define NUMBER_VAL(value) ((Value){VAL_BOOL, {.number = value}})
+#define NUMBER_VAL(value) ((Value){VAL_NUMBER, {.number = value}})
 
 
 typedef struct {
@@ -35,6 +35,7 @@ typedef struct {
 	Value* values;
 } ValueArray;
 
+bool valuesEqual(Value a, Value b);
 void initValueArray(ValueArray* array);
 void writeValueArray(ValueArray* array, Value value);
 void freeValueArray(ValueArray* array);
