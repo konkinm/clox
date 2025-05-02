@@ -12,6 +12,7 @@ add_executable(clox
   debug.c
   main.c
   memory.c
+  object.c
   scanner.c
   value.c
   vm.c
