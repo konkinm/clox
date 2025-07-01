@@ -63,7 +63,7 @@ void markValue(Value value) {
 
 static void markArray(ValueArray* array) {
   for (int i = 0; i < array->count; i++) {
-    markValue;
+    markValue(array->values[i]);
   }
 }
 
