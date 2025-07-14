@@ -474,18 +474,6 @@ static void function(FunctionType type) {
   }
 }
 
-static void classDeclaration() {
-  consume(TOKEN_IDENTIFIER, "Expect class name.");
-  uint8_t nameConstant = identifierConstant(&parser.previous);
-  declareVariable();
-
-  emitBytes(OP_CLASS, nameConstant);
-  defineVariable(nameConstant);
-
-  consume(TOKEN_LEFT_BRACE, "Expect '{' before class body.");
-  consume(TOKEN_RIGHT_BRACE, "Expect '}' after class body.");
-}
-
 static void funDeclaration() {
   uint8_t global = parseVariable("Expect function name.");
   markInitialized();
@@ -633,20 +621,6 @@ static void synchronize() {
     
     advance();
   }
-}
-
-static void declaration() {
-  if (match(TOKEN_CLASS)) {
-    classDeclaration();
-  } else if (match(TOKEN_FUN)) {
-    funDeclaration();
-  } else if (match(TOKEN_VAR)) {
-    varDeclaration();
-  } else {
-    statement();
-  }
-  
-  if (parser.panicMode) synchronize();
 }
 
 static void statement() {
@@ -801,6 +775,47 @@ static void parsePrecedence(Precedence precedence) {
 
 static ParseRule* getRule(TokenType type) {
   return &rules[type];
+}
+
+static void method() {
+  consume(TOKEN_IDENTIFIER, "Expect method name.");
+  uint8_t constant = identifierConstant(&parser.previous);
+
+  FunctionType type = TYPE_FUNCTION;
+  function(type);
+  emitBytes(OP_METHOD, constant);
+}
+
+static void classDeclaration() {
+  consume(TOKEN_IDENTIFIER, "Expect class name.");
+  Token className = parser.previous;
+  uint8_t nameConstant = identifierConstant(&parser.previous);
+  declareVariable();
+
+  emitBytes(OP_CLASS, nameConstant);
+  defineVariable(nameConstant);
+
+  namedVariable(className, false);
+  consume(TOKEN_LEFT_BRACE, "Expect '{' before class body.");
+  while (!check(TOKEN_RIGHT_BRACE) && !check(TOKEN_EOF)) {
+    method();
+  }
+  consume(TOKEN_RIGHT_BRACE, "Expect '}' after class body.");
+  emitByte(OP_POP);
+}
+
+static void declaration() {
+  if (match(TOKEN_CLASS)) {
+    classDeclaration();
+  } else if (match(TOKEN_FUN)) {
+    funDeclaration();
+  } else if (match(TOKEN_VAR)) {
+    varDeclaration();
+  } else {
+    statement();
+  }
+  
+  if (parser.panicMode) synchronize();
 }
 
 ObjFunction* compile(const char* source) {
