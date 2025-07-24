@@ -23,3 +23,10 @@ For Windows:
 ``` console
     cmake --build . --target run
 ```
+
+3. Use of test suite
+``` console
+    cd ./testSuite
+    ./generate.py
+    pytest
+```
