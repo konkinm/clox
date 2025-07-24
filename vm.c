@@ -128,7 +128,7 @@ static bool callValue(Value callee, int argCount) {
                      &initializer)) {
           return call(AS_CLOSURE(initializer), argCount);
         } else if (argCount != 0) {
-          runtimeError("Expected 0 arguments but %d.",
+          runtimeError("Expected 0 arguments but got %d.",
                        argCount);
           return false;
         }
