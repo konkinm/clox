@@ -3,14 +3,14 @@ For Windows:
 1. Prepare enviroment and build
    1. Using *cmake*
 
-    ```
-    mkdir build
-    cd build
-    cmake ..
-    cmake --build .
-    ```
+        ```
+        mkdir build
+        cd build
+        cmake ..
+        cmake --build .
+        ```
 
-    2. Using *nob.h*
+    2. Using [nob.h](https://github.com/tsoding/nob.h)
 
         Bootstrap nob:
         ```
@@ -37,8 +37,8 @@ For Windows:
         cmake --build . --target run
     ```
     
-    3. Use of test suite
-    ``` console
+3. Use of test suite
+    ``` 
         cd ./testSuite
         ./generate.py
         pytest
